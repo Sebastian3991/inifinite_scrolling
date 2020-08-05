@@ -1,12 +1,33 @@
 const container = document.getElementById('container');
+const loading = document.querySelector('.loading');
 
 getPost();
 getPost();
 getPost();
 
+
+
+//add scroll animation
+
+window.addEventListener('scroll', () => {
+	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+	
+	console.log( { scrollTop, scrollHeight, clientHeight } );
+
+	if(clientHeight + scrollTop >= scrollHeight - 5) {
+
+		//show loading animation
+		showLoading();
+
+	}
+});
+
+function showLoading () {
+	loading.classList.add('show');
+	setTimeout(getPost, 1000)
+}
 async function getPost() {
 	const postResponse = await fetch(`https://jsonplaceholder.typicode.com/posts/${getRandomNr()}`);
-
 	const postData = await postResponse.json();
 
 
@@ -14,9 +35,6 @@ async function getPost() {
 
 	const userResponse = await fetch('https://randomuser.me/api');
 	const userData = await userResponse.json();
-
-	 console.log(userData);
-
 	const data = { post: postData, user: userData.results[0] };
 
 	addDataToDOM(data);
@@ -40,4 +58,6 @@ function addDataToDOM(data) {
 				</div> `;
 
 	container.appendChild(postElement);
+
+	loading.classList.remove('show');
 }
